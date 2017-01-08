@@ -57,9 +57,43 @@
   <audio data-key="75" src="sounds/tom.wav"></audio>
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
-<script>
+  <script>
 
-</script>
+    function playSound(e){
+
+      // cool site for keycodes: http://keycode.info/
+
+      const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+      const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+      
+      // stop the function from running if there is no corresponding data-key
+      if(!audio) return;  
+
+      // rewind to the start in case the key has been pressed again before its finished
+      audio.currentTime = 0;
+
+      audio.play();
+      key.classList.add('playing');
+    }
+
+    function removeTransition(e){
+      // skip it if it's not a transform transition
+      if(e.propertyName !== 'transform') return;
+
+      this.classList.remove('playing');
+    }
+
+    // get an array of every single element that is matched
+    const keys = document.querySelectorAll('.key');
+
+    /* listen for a transitionend on each one: 
+       - you must explicitly loop over each one and attach an event listener
+       - each key gets an eventlistener added to it, which is transitionend
+       - when a transition is ending we will remove it 
+    */
+    keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+    window.addEventListener('keydown', playSound);
+  </script>
 
 
 </body>
